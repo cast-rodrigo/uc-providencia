@@ -1,0 +1,59 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import EncabezadoSeccion from './EncabezadoSeccion.astro';
+import staff from '../data/staff.json';
+
+// Fotos opcionales en src/assets/staff/ (el nombre del archivo va en "foto").
+const fotos = import.meta.glob<{ default: ImageMetadata }>('../assets/staff/*.{jpg,jpeg,png,webp,avif}', { eager: true });
+const buscarFoto = (archivo: string) =>
+  archivo ? Object.entries(fotos).find(([ruta]) => ruta.endsWith(`/${archivo}`))?.[1].default : undefined;
+
+const iniciales = (nombre: string) =>
+  nombre
+    .replace(/^profe\s+/i, '')
+    .split(/\s+/)
+    .map((p) => p[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+---
+
+<section id="cuerpo-tecnico" aria-labelledby="titulo-staff" class="bg-gris-50 py-20 sm:py-28 dark:bg-uc-noche-2">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <EncabezadoSeccion
+      id="titulo-staff"
+      antetitulo="Los que nos guían"
+      titulo="Cuerpo técnico"
+      bajada="Entrenadores y delegados que regalan su tiempo para que los niños crezcan jugando."
+    />
+
+    <ul class="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+      {
+        staff.map((p) => {
+          const foto = buscarFoto(p.foto);
+          return (
+            <li class="tarjeta flex flex-col p-6 hover:-translate-y-1">
+              {foto ? (
+                <Image src={foto} alt={p.nombre} width={128} height={128} class="size-16 rounded-full object-cover" />
+              ) : (
+                <span
+                  aria-hidden="true"
+                  class="relative grid size-16 place-items-center overflow-hidden rounded-full bg-uc-azul font-display text-2xl font-extrabold text-white ring-4 ring-white dark:ring-uc-noche"
+                >
+                  <span class="absolute inset-x-0 top-1/2 h-6 -translate-y-1/2 bg-uc-noche/30" />
+                  <span class="relative">{iniciales(p.nombre)}</span>
+                </span>
+              )}
+              <p class="mt-4 text-xs font-semibold tracking-widest text-uc-azul uppercase dark:text-uc-cielo">{p.rol}</p>
+              <h3 class="mt-1 font-display text-2xl font-extrabold tracking-wide text-uc-noche uppercase dark:text-white">
+                {p.nombre}
+              </h3>
+              {p.descripcion && <p class="mt-2 text-sm leading-relaxed text-gris-600 dark:text-gris-200">{p.descripcion}</p>}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>

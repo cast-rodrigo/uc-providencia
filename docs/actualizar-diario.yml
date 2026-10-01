@@ -1,0 +1,30 @@
+# Vuelve a publicar el sitio todos los días para que se actualicen solos
+# el feed de Instagram (Behold) y el "próximo partido".
+#
+# Copia de la tarea para crearla desde la web de GitHub en
+# .github/workflows/actualizar-diario.yml (ver README, sección 6).
+#
+# Requiere un secreto del repositorio llamado NETLIFY_BUILD_HOOK con la URL
+# del build hook de Netlify (ver README, paso "Actualización diaria").
+name: Actualizar sitio a diario
+
+on:
+  schedule:
+    # 10:00 UTC = 07:00 en Santiago (horario de verano) / 06:00 (horario de invierno).
+    - cron: '0 10 * * *'
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña "Actions"
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar al build hook de Netlify
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "Falta el secreto NETLIFY_BUILD_HOOK. Revisa el README."
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST -d '{}' "$HOOK"
+          echo "Listo: Netlify recibió la orden de publicar."

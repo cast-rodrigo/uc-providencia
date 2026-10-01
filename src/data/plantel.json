@@ -1,0 +1,19 @@
+{
+  "categoria": "Sub-10",
+  "jugadores": [
+    { "numero": 1, "nombre": "Tomi", "posicion": "Arquero", "foto": "", "mostrarFoto": false },
+    { "numero": 12, "nombre": "Benja", "posicion": "Arquero", "foto": "", "mostrarFoto": false },
+    { "numero": 2, "nombre": "Matías", "posicion": "Defensa", "foto": "", "mostrarFoto": false },
+    { "numero": 3, "nombre": "Agus", "posicion": "Defensa", "foto": "", "mostrarFoto": false },
+    { "numero": 4, "nombre": "Joaquín", "posicion": "Defensa", "foto": "", "mostrarFoto": false },
+    { "numero": 5, "nombre": "Lucas", "posicion": "Defensa", "foto": "", "mostrarFoto": false },
+    { "numero": 6, "nombre": "Vicho", "posicion": "Mediocampista", "foto": "", "mostrarFoto": false },
+    { "numero": 8, "nombre": "Martín", "posicion": "Mediocampista", "foto": "", "mostrarFoto": false },
+    { "numero": 10, "nombre": "Maxi", "posicion": "Mediocampista", "foto": "", "mostrarFoto": false },
+    { "numero": 14, "nombre": "Cristóbal", "posicion": "Mediocampista", "foto": "", "mostrarFoto": false },
+    { "numero": 7, "nombre": "Pancho", "posicion": "Delantero", "foto": "", "mostrarFoto": false },
+    { "numero": 9, "nombre": "Nico", "posicion": "Delantero", "foto": "", "mostrarFoto": false },
+    { "numero": 11, "nombre": "Santi", "posicion": "Delantero", "foto": "", "mostrarFoto": false },
+    { "numero": 17, "nombre": "Gaspi", "posicion": "Delantero", "foto": "", "mostrarFoto": false }
+  ]
+}

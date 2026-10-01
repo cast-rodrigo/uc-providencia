@@ -1,0 +1,26 @@
+[
+  {
+    "nombre": "Profe Rodrigo",
+    "rol": "Entrenador",
+    "descripcion": "Exjugador de las series menores de la UC. Cree que el mejor partido es el que se disfruta.",
+    "foto": ""
+  },
+  {
+    "nombre": "Profe Camila",
+    "rol": "Preparadora de arqueros",
+    "descripcion": "Enseña a volar de palo a palo y, sobre todo, a no tenerle miedo a la pelota.",
+    "foto": ""
+  },
+  {
+    "nombre": "Felipe",
+    "rol": "Delegado",
+    "descripcion": "Coordina los partidos, las colaciones y que nadie se quede sin camiseta.",
+    "foto": ""
+  },
+  {
+    "nombre": "Carolina",
+    "rol": "Delegada",
+    "descripcion": "Encargada del grupo de apoderados y de que la barra llegue completa.",
+    "foto": ""
+  }
+]

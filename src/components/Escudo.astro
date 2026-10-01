@@ -1,0 +1,49 @@
+---
+// Muestra el escudo oficial si existe public/escudo-uc.svg (o .png).
+// Mientras no exista, muestra un recuadro neutro con el texto "Escudo aquí".
+// No se dibuja ni se recrea el escudo.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props {
+  class?: string;
+  /** Texto alternativo; vacío si el escudo es decorativo junto al nombre. */
+  alt?: string;
+  /** Tamaño en píxeles (se ignora si fluido es true). */
+  tamano?: number;
+  /** Si es true, ocupa todo el ancho y alto de su contenedor. */
+  fluido?: boolean;
+}
+
+const { class: clase = '', alt = 'Escudo de la Universidad Católica', tamano = 96, fluido = false } = Astro.props;
+
+const publico = join(process.cwd(), 'public');
+const archivo = ['escudo-uc.svg', 'escudo-uc.png'].find((nombre) => existsSync(join(publico, nombre)));
+---
+
+{
+  archivo ? (
+    <img
+      src={`/${archivo}`}
+      alt={alt}
+      width={tamano}
+      height={tamano}
+      class:list={['object-contain', fluido && 'size-full', clase]}
+      decoding="async"
+    />
+  ) : (
+    <span
+      role={alt ? 'img' : undefined}
+      aria-label={alt ? `${alt} (pendiente)` : undefined}
+      aria-hidden={alt ? undefined : 'true'}
+      class:list={[
+        'inline-grid place-items-center rounded-2xl border-2 border-dashed border-gris-400 bg-gris-50 text-center leading-none font-display font-bold tracking-wide text-gris-600 uppercase dark:border-gris-400/60 dark:bg-uc-noche-2 dark:text-gris-200',
+        fluido && 'size-full text-[clamp(11px,2.4vw,20px)]',
+        clase,
+      ]}
+      style={fluido ? undefined : `width:${tamano}px;height:${tamano}px;font-size:${Math.max(8, Math.round(tamano / 5))}px`}
+    >
+      Escudo<br />aquí
+    </span>
+  )
+}

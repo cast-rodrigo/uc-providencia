@@ -1,0 +1,14 @@
+{
+  "horarios": [
+    { "dia": "Martes", "hora": "17:30 a 19:00", "detalle": "Técnica y juego" },
+    { "dia": "Jueves", "hora": "17:30 a 19:00", "detalle": "Táctica y fútbol reducido" },
+    { "dia": "Sábado", "hora": "Según fixture", "detalle": "Partido de liga" }
+  ],
+  "nota": "Llegar 15 minutos antes, con canilleras, botella de agua y muchas ganas.",
+  "ubicacion": {
+    "nombre": "Cancha de entrenamiento (dirección de ejemplo)",
+    "direccion": "Av. Providencia 1234, Providencia, Santiago",
+    "lat": -33.4295,
+    "lon": -70.6135
+  }
+}

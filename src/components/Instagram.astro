@@ -1,0 +1,121 @@
+---
+import EncabezadoSeccion from './EncabezadoSeccion.astro';
+import sitio from '../data/sitio.json';
+import { cargarInstagram } from '../lib/instagram';
+
+const feed = await cargarInstagram();
+---
+
+<section id="instagram" aria-labelledby="titulo-instagram" class="py-20 sm:py-28">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+      <EncabezadoSeccion
+        id="titulo-instagram"
+        antetitulo={sitio.instagramUsuario}
+        titulo="Desde nuestro Instagram"
+        bajada="Goles, abrazos, entrenamientos y terceros tiempos. Lo último del equipo."
+      />
+      <a
+        href={sitio.instagramUrl}
+        target="_blank"
+        rel="noopener"
+        class="btn shrink-0 border-2 border-uc-azul text-uc-azul hover:bg-uc-azul hover:text-white dark:border-white/70 dark:text-white dark:hover:bg-white dark:hover:text-uc-noche"
+      >
+        Ver perfil <span class="sr-only">de Instagram (se abre en una pestaña nueva)</span>
+      </a>
+    </div>
+
+    {
+      feed.fuente === 'behold' && (
+        <ul class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {feed.publicaciones.map((p) => (
+            <li>
+              <a
+                href={p.enlace}
+                target="_blank"
+                rel="noopener"
+                class="group tarjeta block overflow-hidden hover:-translate-y-1"
+              >
+                <div class="relative aspect-square overflow-hidden bg-gris-100 dark:bg-uc-noche-2">
+                  <img
+                    src={p.imagen}
+                    alt={p.texto ? `Publicación de Instagram: ${p.texto}` : 'Publicación de Instagram del equipo'}
+                    width={p.ancho ?? 600}
+                    height={p.alto ?? 600}
+                    loading="lazy"
+                    decoding="async"
+                    class="size-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  {p.esVideo && (
+                    <span class="absolute top-2 right-2 rounded-full bg-uc-noche/80 px-2 py-0.5 text-xs font-semibold text-white">
+                      Video
+                    </span>
+                  )}
+                </div>
+                {p.texto && (
+                  <p class="line-clamp-2 p-3 text-sm leading-snug text-gris-600 dark:text-gris-200" aria-hidden="true">
+                    {p.texto}
+                  </p>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      feed.fuente === 'embeds' && feed.enlaces.length > 0 && (
+        <div data-embeds-instagram class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {feed.enlaces.map((enlace) => (
+            <blockquote
+              class="instagram-media tarjeta !m-0 !w-full !max-w-none !min-w-0 p-6"
+              data-instgrm-permalink={enlace}
+              data-instgrm-version="14"
+            >
+              <a href={enlace} target="_blank" rel="noopener" class="font-semibold text-uc-azul underline dark:text-uc-cielo">
+                Ver esta publicación en Instagram
+              </a>
+            </blockquote>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      feed.fuente === 'embeds' && feed.enlaces.length === 0 && (
+        <a
+          href={sitio.instagramUrl}
+          target="_blank"
+          rel="noopener"
+          class="group relative mt-10 block overflow-hidden rounded-uc bg-uc-noche p-8 text-white shadow-suave sm:p-12"
+        >
+          <span aria-hidden="true" class="absolute inset-x-0 top-1/2 h-20 -translate-y-1/2 bg-uc-azul transition group-hover:h-24" />
+          <span class="relative block font-display text-4xl font-extrabold uppercase sm:text-6xl">{sitio.instagramUsuario}</span>
+          <span class="relative mt-2 block text-lg text-white/90">
+            Síguenos para ver fotos y videos de cada partido →
+          </span>
+        </a>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  // Carga el embed oficial de Instagram solo cuando la sección entra en pantalla.
+  const contenedor = document.querySelector('[data-embeds-instagram]');
+  if (contenedor) {
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        observador.disconnect();
+        const script = document.createElement('script');
+        script.src = 'https://www.instagram.com/embed.js';
+        script.async = true;
+        document.body.append(script);
+      },
+      { rootMargin: '300px' },
+    );
+    observador.observe(contenedor);
+  }
+</script>

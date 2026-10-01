@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  numero: number;
+  nombre: string;
+  posicion: string;
+  foto?: ImageMetadata;
+}
+
+const { numero, nombre, posicion, foto } = Astro.props;
+---
+
+<li class="tarjeta group overflow-hidden hover:-translate-y-1 hover:shadow-lg">
+  <div class="relative aspect-[4/5] overflow-hidden bg-gradient-to-b from-gris-50 to-white dark:from-uc-noche dark:to-uc-noche-2">
+    {
+      foto ? (
+        <Image
+          src={foto}
+          alt={`${nombre}, ${posicion.toLowerCase()} del equipo`}
+          widths={[240, 360, 480]}
+          sizes="(min-width: 1024px) 240px, (min-width: 640px) 33vw, 50vw"
+          class="size-full object-cover transition duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 200 250"
+          class="absolute inset-x-0 bottom-0 mx-auto w-[88%] text-gris-200 transition duration-500 group-hover:scale-[1.03] dark:text-white/10"
+        >
+          <circle cx="100" cy="72" r="38" fill="currentColor" />
+          <path d="M18 250c0-62 34-118 82-118s82 56 82 118Z" fill="currentColor" />
+        </svg>
+      )
+    }
+
+    <!-- La franja de la camiseta, a la altura del pecho, con el número. -->
+    <div
+      class:list={[
+        'absolute inset-x-0 flex items-center justify-between bg-uc-azul px-4 text-white',
+        foto ? 'bottom-0 h-12' : 'top-[62%] h-14',
+      ]}
+    >
+      <span class="text-[0.7rem] font-semibold tracking-[0.2em] uppercase opacity-90">UC</span>
+      <span class="font-display text-4xl leading-none font-extrabold tabular-nums">
+        <span class="sr-only">Número</span>
+        {numero}
+      </span>
+    </div>
+  </div>
+
+  <div class="p-4">
+    <p class="font-display text-2xl leading-tight font-extrabold tracking-wide text-uc-noche uppercase dark:text-white">
+      {nombre}
+    </p>
+    <p class="text-sm text-gris-600 dark:text-gris-200">{posicion}</p>
+  </div>
+</li>

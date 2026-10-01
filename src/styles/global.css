@@ -1,0 +1,126 @@
+@import "tailwindcss";
+@import "@fontsource/barlow-condensed/700.css";
+@import "@fontsource/barlow-condensed/800.css";
+@import "@fontsource/barlow-condensed/800-italic.css";
+@import "@fontsource-variable/inter";
+
+/* Modo oscuro por clase (.dark en <html>), con respaldo en la preferencia del sistema. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Colores cruzados.
+  Tomados del sitio oficial cruzados.cl (variables globales de su tema):
+  azul principal #20609F, celeste #018EDB y cielo #7ECCF3.
+  El rojo no aparece en cruzados.cl: se usa solo como acento, con moderación.
+  En Tailwind 4 estos tokens reemplazan al antiguo tailwind.config: generan
+  clases (bg-uc-azul, text-uc-noche…) y variables CSS (--color-uc-azul…).
+*/
+@theme static {
+  --color-uc-azul: #20609f;
+  --color-uc-azul-hondo: #174a7d;
+  --color-uc-celeste: #018edb;
+  --color-uc-cielo: #7eccf3;
+  --color-uc-noche: #001e50;
+  --color-uc-noche-2: #0a2a5e;
+  --color-uc-blanco: #ffffff;
+  --color-uc-rojo: #d50032;
+
+  --color-gris-50: #f5f6f8;
+  --color-gris-100: #eceef2;
+  --color-gris-200: #d9dce3;
+  --color-gris-400: #9a9aa2;
+  --color-gris-600: #63636c;
+  --color-gris-800: #2b2b30;
+
+  --font-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-uc: 1rem;
+  --shadow-suave: 0 1px 2px rgb(0 30 80 / 0.06), 0 8px 24px -8px rgb(0 30 80 / 0.14);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-white font-sans text-gris-800 antialiased dark:bg-uc-noche dark:text-gris-100;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-uc-celeste);
+    outline-offset: 3px;
+    border-radius: 0.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* La franja: entra desde la izquierda, como cuando uno se pone la camiseta. */
+  .franja-entra {
+    transform-origin: left center;
+    animation: franja-entra 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Franjas que entran al hacer scroll (solo con JavaScript y sin "reducir movimiento"). */
+  @media (prefers-reduced-motion: no-preference) {
+    .js .franja-scroll {
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .js .franja-scroll.visible {
+      transform: scaleX(1);
+    }
+  }
+
+  .tarjeta {
+    @apply rounded-uc bg-white shadow-suave ring-1 ring-gris-100 transition duration-300 dark:bg-uc-noche-2 dark:ring-white/10;
+  }
+
+  .aparece {
+    animation: aparece 0.7s ease-out both;
+  }
+
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 font-display text-lg font-bold tracking-wide uppercase transition duration-200 ease-out;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes franja-entra {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes aparece {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

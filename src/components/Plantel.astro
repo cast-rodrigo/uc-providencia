@@ -1,0 +1,37 @@
+---
+import type { ImageMetadata } from 'astro';
+import EncabezadoSeccion from './EncabezadoSeccion.astro';
+import TarjetaJugador from './TarjetaJugador.astro';
+import plantel from '../data/plantel.json';
+
+// Fotos en src/assets/plantel/. Solo se muestran si el jugador tiene "mostrarFoto": true.
+const fotos = import.meta.glob<{ default: ImageMetadata }>('../assets/plantel/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+});
+const buscarFoto = (archivo: string) =>
+  Object.entries(fotos).find(([ruta]) => ruta.endsWith(`/${archivo}`))?.[1].default;
+
+const orden = ['Arquero', 'Defensa', 'Mediocampista', 'Delantero'];
+const jugadores = [...plantel.jugadores]
+  .sort((a, b) => {
+    const pa = orden.indexOf(a.posicion);
+    const pb = orden.indexOf(b.posicion);
+    return (pa === -1 ? 99 : pa) - (pb === -1 ? 99 : pb) || a.numero - b.numero;
+  })
+  .map((j) => ({ ...j, imagen: j.mostrarFoto === true && j.foto ? buscarFoto(j.foto) : undefined }));
+---
+
+<section id="equipo" aria-labelledby="titulo-equipo" class="py-20 sm:py-28">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <EncabezadoSeccion
+      id="titulo-equipo"
+      antetitulo={`Plantel ${plantel.categoria}`}
+      titulo="Nuestro equipo"
+      bajada="Ellos son los que dejan todo en la cancha cada fin de semana. Distintos números, una sola franja."
+    />
+
+    <ul class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+      {jugadores.map((j) => <TarjetaJugador numero={j.numero} nombre={j.nombre} posicion={j.posicion} foto={j.imagen} />)}
+    </ul>
+  </div>
+</section>

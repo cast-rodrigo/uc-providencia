@@ -1,0 +1,166 @@
+---
+import EncabezadoSeccion from './EncabezadoSeccion.astro';
+import partidos from '../data/partidos.json';
+import { conMayuscula, fechaChile, formatoFecha } from '../lib/fechas';
+
+const ahora = Date.now();
+// Un partido sigue siendo "el próximo" hasta 2 horas después de empezar.
+const proximo = partidos.proximos
+  .map((p) => ({ ...p, cuando: fechaChile(p.fecha, p.hora) }))
+  .filter((p) => p.cuando.getTime() + 2 * 3600_000 > ahora)
+  .sort((a, b) => a.cuando.getTime() - b.cuando.getTime())[0];
+
+const resultados = [...partidos.resultados]
+  .sort((a, b) => b.fecha.localeCompare(a.fecha))
+  .slice(0, 6)
+  .map((r) => {
+    const g = r.golesNuestros;
+    const c = r.golesRival;
+    return {
+      ...r,
+      cuando: formatoFecha(fechaChile(r.fecha, '12:00'), { day: 'numeric', month: 'short' }),
+      resultado: g > c ? 'Ganamos' : g < c ? 'Perdimos' : 'Empatamos',
+      letra: g > c ? 'G' : g < c ? 'P' : 'E',
+    };
+  });
+---
+
+<section id="partido" aria-labelledby="titulo-partido" class="bg-gris-50 py-20 sm:py-28 dark:bg-uc-noche-2">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6">
+    <EncabezadoSeccion id="titulo-partido" antetitulo="Fixture" titulo="Próximo partido" />
+
+    {
+      proximo ? (
+        <article class="relative mt-10 overflow-hidden rounded-uc bg-uc-azul text-white shadow-suave">
+          <div aria-hidden="true" class="absolute inset-x-0 top-1/2 h-28 -translate-y-1/2 bg-uc-noche/20" />
+          <div class="relative grid gap-8 p-6 sm:p-10 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+            <div>
+              <p class="flex flex-wrap items-center gap-2 text-sm font-semibold tracking-wider uppercase">
+                <span class="rounded-full bg-white px-3 py-1 text-uc-azul">
+                  {proximo.condicion === 'local' ? 'De local' : 'De visita'}
+                </span>
+                <span class="text-white/90">{proximo.torneo}</span>
+              </p>
+              <h3 class="mt-5 font-display text-5xl leading-[0.9] font-extrabold uppercase sm:text-7xl">
+                <span class="mb-1 block text-2xl text-uc-cielo sm:text-3xl">UC Providencia vs.</span>
+                {proximo.rival}
+              </h3>
+              <dl class="mt-6 grid gap-4 text-base sm:grid-cols-2">
+                <div>
+                  <dt class="text-xs font-semibold tracking-wider text-white/80 uppercase">Cuándo</dt>
+                  <dd class="mt-0.5 font-medium">
+                    <time datetime={proximo.cuando.toISOString()}>
+                      {conMayuscula(formatoFecha(proximo.cuando, { weekday: 'long', day: 'numeric', month: 'long' }))},{' '}
+                      {proximo.hora} hrs
+                    </time>
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold tracking-wider text-white/80 uppercase">Dónde</dt>
+                  <dd class="mt-0.5 font-medium">{proximo.cancha}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div
+              data-cuenta-regresiva
+              data-fecha={proximo.cuando.toISOString()}
+              class="rounded-uc bg-uc-noche/45 p-5 ring-1 ring-white/15 sm:p-6"
+            >
+              <p class="text-center text-sm font-semibold tracking-widest text-white/90 uppercase" data-cuenta-titulo>
+                Faltan
+              </p>
+              <ul class="mt-3 grid grid-cols-4 gap-2 text-center" aria-hidden="true">
+                {['días', 'horas', 'min', 'seg'].map((u) => (
+                  <li class="rounded-xl bg-white/10 py-3">
+                    <span class="block font-display text-4xl font-extrabold tabular-nums sm:text-5xl" data-unidad={u}>
+                      –
+                    </span>
+                    <span class="text-xs tracking-wider text-white/85 uppercase">{u}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      ) : (
+        <p class="tarjeta mt-10 p-8 text-lg">Pronto anunciaremos el próximo partido. ¡Atentos al Instagram!</p>
+      )
+    }
+
+    {
+      resultados.length > 0 && (
+        <div class="mt-14">
+          <h3 class="font-display text-2xl font-extrabold tracking-wide text-uc-noche uppercase dark:text-white">
+            Últimos resultados
+          </h3>
+          <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+            {resultados.map((r) => (
+              <li class="tarjeta flex items-center gap-4 p-4 hover:-translate-y-0.5">
+                <span
+                  class:list={[
+                    'grid size-10 shrink-0 place-items-center rounded-full font-display text-lg font-extrabold',
+                    r.letra === 'G' && 'bg-uc-azul text-white',
+                    r.letra === 'E' && 'bg-gris-200 text-gris-800',
+                    r.letra === 'P' && 'bg-gris-600 text-white',
+                  ]}
+                >
+                  <span aria-hidden="true">{r.letra}</span>
+                  <span class="sr-only">{r.resultado}</span>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate font-semibold text-uc-noche dark:text-white">vs. {r.rival}</p>
+                  <p class="text-sm text-gris-600 dark:text-gris-200">
+                    {r.cuando} · {r.condicion === 'local' ? 'Local' : 'Visita'}
+                  </p>
+                </div>
+                <p class="font-display text-3xl font-extrabold text-uc-noche tabular-nums dark:text-white">
+                  <span class="sr-only">UC Providencia</span> {r.golesNuestros}
+                  <span class="text-gris-400" aria-hidden="true">
+                    –
+                  </span>
+                  <span class="sr-only">{r.rival}</span> {r.golesRival}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cuenta-regresiva]').forEach((caja) => {
+    const objetivo = new Date(caja.dataset.fecha ?? '').getTime();
+    const titulo = caja.querySelector('[data-cuenta-titulo]');
+    const celdas = new Map(
+      [...caja.querySelectorAll<HTMLElement>('[data-unidad]')].map((c) => [c.dataset.unidad, c] as const),
+    );
+    const poner = (unidad: string, valor: string) => {
+      const celda = celdas.get(unidad);
+      if (celda) celda.textContent = valor;
+    };
+    const dos = (n: number) => String(n).padStart(2, '0');
+
+    const actualizar = () => {
+      const resta = objetivo - Date.now();
+      if (resta <= 0) {
+        if (titulo) titulo.textContent = resta > -2 * 3600_000 ? '¡Estamos jugando! Vamos UC' : '¡Partido jugado!';
+        ['días', 'horas', 'min', 'seg'].forEach((u) => poner(u, '0'));
+        return false;
+      }
+      poner('días', String(Math.floor(resta / 86_400_000)));
+      poner('horas', dos(Math.floor(resta / 3_600_000) % 24));
+      poner('min', dos(Math.floor(resta / 60_000) % 60));
+      poner('seg', dos(Math.floor(resta / 1000) % 60));
+      return true;
+    };
+
+    if (actualizar()) {
+      const reloj = setInterval(() => {
+        if (!actualizar()) clearInterval(reloj);
+      }, 1000);
+    }
+  });
+</script>

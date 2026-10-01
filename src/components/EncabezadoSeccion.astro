@@ -1,0 +1,41 @@
+---
+interface Props {
+  id: string;
+  antetitulo: string;
+  titulo: string;
+  bajada?: string;
+  /** Para fondos azules: textos en blanco. */
+  claro?: boolean;
+}
+const { id, antetitulo, titulo, bajada, claro = false } = Astro.props;
+---
+
+<header class="max-w-2xl">
+  <p
+    class:list={[
+      'flex items-center gap-3 text-sm font-semibold tracking-widest uppercase',
+      claro ? 'text-uc-cielo' : 'text-uc-azul dark:text-uc-cielo',
+    ]}
+  >
+    <span
+      class:list={['franja-scroll block h-1.5 w-10 rounded-full', claro ? 'bg-uc-cielo' : 'bg-uc-azul dark:bg-uc-cielo']}
+      aria-hidden="true"></span>
+    {antetitulo}
+  </p>
+  <h2
+    id={id}
+    class:list={[
+      'mt-3 font-display text-4xl leading-none font-extrabold tracking-tight uppercase sm:text-6xl',
+      claro ? 'text-white' : 'text-uc-noche dark:text-white',
+    ]}
+  >
+    {titulo}
+  </h2>
+  {
+    bajada && (
+      <p class:list={['mt-4 text-lg leading-relaxed', claro ? 'text-white/85' : 'text-gris-600 dark:text-gris-200']}>
+        {bajada}
+      </p>
+    )
+  }
+</header>

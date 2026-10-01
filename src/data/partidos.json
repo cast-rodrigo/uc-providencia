@@ -1,0 +1,62 @@
+{
+  "proximos": [
+    {
+      "rival": "Deportivo Los Leones",
+      "fecha": "2026-10-03",
+      "hora": "10:30",
+      "cancha": "Complejo Deportivo Las Encinas, cancha 2",
+      "condicion": "local",
+      "torneo": "Liga Oriente Sub-10"
+    },
+    {
+      "rival": "Club Andino Ñuñoa",
+      "fecha": "2026-10-10",
+      "hora": "11:00",
+      "cancha": "Estadio Municipal Villa Andina",
+      "condicion": "visita",
+      "torneo": "Liga Oriente Sub-10"
+    },
+    {
+      "rival": "Escuela Los Pumas",
+      "fecha": "2026-10-17",
+      "hora": "09:30",
+      "cancha": "Complejo Deportivo Las Encinas, cancha 1",
+      "condicion": "local",
+      "torneo": "Liga Oriente Sub-10"
+    }
+  ],
+  "resultados": [
+    {
+      "rival": "Atlético Pedreros",
+      "fecha": "2026-09-26",
+      "condicion": "visita",
+      "golesNuestros": 3,
+      "golesRival": 2,
+      "torneo": "Liga Oriente Sub-10"
+    },
+    {
+      "rival": "Unión San Ramón",
+      "fecha": "2026-09-12",
+      "condicion": "local",
+      "golesNuestros": 1,
+      "golesRival": 1,
+      "torneo": "Liga Oriente Sub-10"
+    },
+    {
+      "rival": "Real Bellavista",
+      "fecha": "2026-09-05",
+      "condicion": "local",
+      "golesNuestros": 4,
+      "golesRival": 0,
+      "torneo": "Liga Oriente Sub-10"
+    },
+    {
+      "rival": "Club Cordillera",
+      "fecha": "2026-08-29",
+      "condicion": "visita",
+      "golesNuestros": 0,
+      "golesRival": 2,
+      "torneo": "Liga Oriente Sub-10"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Navegacion from '../components/Navegacion.astro';
+import PiePagina from '../components/PiePagina.astro';
+import EncabezadoSeccion from '../components/EncabezadoSeccion.astro';
+import { fotosGaleria } from '../lib/galeria';
+
+// Versión grande de cada foto para el visor (lightbox).
+const fotos = await Promise.all(
+  fotosGaleria.map(async (f) => ({
+    ...f,
+    grande: await getImage({ src: f.imagen, width: Math.min(1600, f.imagen.width), format: 'webp' }),
+  })),
+);
+---
+
+<Layout titulo="Galería" descripcion="Fotos de partidos, entrenamientos y celebraciones de UC Providencia.">
+  <Navegacion />
+  <main id="contenido" class="py-16 sm:py-24">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <EncabezadoSeccion
+        id="titulo-galeria"
+        antetitulo="Recuerdos con la franja"
+        titulo="Galería"
+        bajada="Partidos, entrenamientos y celebraciones. Toca una foto para verla en grande."
+      />
+
+      {
+        fotos.length === 0 ? (
+          <p class="tarjeta mt-10 p-8 text-lg">Pronto subiremos las primeras fotos.</p>
+        ) : (
+          <ul class="mt-10 columns-2 gap-3 sm:gap-4 lg:columns-3">
+            {fotos.map((f, i) => (
+              <li class="mb-3 break-inside-avoid sm:mb-4">
+                <button
+                  type="button"
+                  data-abrir-foto={i}
+                  class="group block w-full overflow-hidden rounded-uc shadow-suave"
+                >
+                  <Image
+                    src={f.imagen}
+                    alt={f.alt}
+                    widths={[320, 480, 640, 800]}
+                    sizes="(min-width: 1024px) 360px, 50vw"
+                    class="h-auto w-full transition duration-500 group-hover:scale-105"
+                  />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      <p class="mt-10">
+        <a href="/" class="font-semibold text-uc-azul underline-offset-4 hover:underline dark:text-uc-cielo">← Volver al inicio</a>
+      </p>
+    </div>
+  </main>
+  <PiePagina />
+
+  <dialog
+    id="visor"
+    aria-label="Visor de fotos"
+    class="m-auto h-dvh max-h-none w-screen max-w-none bg-uc-noche/95 p-0 backdrop:bg-uc-noche/60"
+  >
+    <div class="flex h-full flex-col text-white">
+      <div class="flex items-center justify-between gap-4 p-3 sm:p-5">
+        <p class="font-display text-lg tracking-wide" data-visor-contador></p>
+        <form method="dialog">
+          <button class="grid size-12 place-items-center rounded-full bg-white/10 transition hover:bg-white hover:text-uc-noche">
+            <span class="sr-only">Cerrar visor</span>
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"></path></svg>
+          </button>
+        </form>
+      </div>
+      <figure class="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-3 sm:px-20">
+        <img data-visor-imagen alt="" class="max-h-full min-h-0 max-w-full rounded-xl object-contain shadow-2xl" />
+        <figcaption data-visor-texto class="text-center text-white/90"></figcaption>
+      </figure>
+      <div class="flex justify-center gap-4 p-4 sm:pb-6">
+        <button type="button" data-visor-anterior class="grid size-12 place-items-center rounded-full bg-white/10 transition hover:bg-white hover:text-uc-noche">
+          <span class="sr-only">Foto anterior</span>
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <button type="button" data-visor-siguiente class="grid size-12 place-items-center rounded-full bg-white/10 transition hover:bg-white hover:text-uc-noche">
+          <span class="sr-only">Foto siguiente</span>
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <script
+    is:inline
+    type="application/json"
+    id="datos-visor"
+    set:html={JSON.stringify(fotos.map((f) => ({ src: f.grande.src, alt: f.alt })))}
+  />
+</Layout>
+
+<script>
+  const visor = document.getElementById('visor') as HTMLDialogElement | null;
+  const fotos: { src: string; alt: string }[] = JSON.parse(document.getElementById('datos-visor')?.textContent ?? '[]');
+
+  if (visor && fotos.length) {
+    const imagen = visor.querySelector<HTMLImageElement>('[data-visor-imagen]')!;
+    const texto = visor.querySelector('[data-visor-texto]')!;
+    const contador = visor.querySelector('[data-visor-contador]')!;
+    let actual = 0;
+
+    const mostrar = (i: number) => {
+      actual = (i + fotos.length) % fotos.length;
+      imagen.src = fotos[actual].src;
+      imagen.alt = fotos[actual].alt;
+      texto.textContent = fotos[actual].alt;
+      contador.textContent = `${actual + 1} / ${fotos.length}`;
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-abrir-foto]').forEach((boton) =>
+      boton.addEventListener('click', () => {
+        mostrar(Number(boton.dataset.abrirFoto));
+        visor.showModal();
+      }),
+    );
+    visor.querySelector('[data-visor-anterior]')?.addEventListener('click', () => mostrar(actual - 1));
+    visor.querySelector('[data-visor-siguiente]')?.addEventListener('click', () => mostrar(actual + 1));
+    visor.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') mostrar(actual - 1);
+      if (e.key === 'ArrowRight') mostrar(actual + 1);
+    });
+    // Tocar el fondo oscuro cierra el visor.
+    visor.addEventListener('click', (e) => {
+      if (e.target === visor || (e.target as HTMLElement).tagName === 'FIGURE') visor.close();
+    });
+
+    // Deslizar con el dedo en el celular.
+    let inicioX = 0;
+    visor.addEventListener('touchstart', (e) => (inicioX = e.touches[0].clientX), { passive: true });
+    visor.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - inicioX;
+      if (Math.abs(dx) > 50) mostrar(actual + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>

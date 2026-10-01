@@ -1,0 +1,13 @@
+{
+  "nota": "Descripción de cada foto de src/assets/galeria (para personas que usan lector de pantalla). La clave es el nombre del archivo.",
+  "fotos": {
+    "01-calentamiento.jpg": "El equipo calentando antes del partido",
+    "02-celebracion.jpg": "Celebración de un gol en la cancha",
+    "03-camarin.jpg": "Charla técnica antes de salir a jugar",
+    "04-arquero.jpg": "Nuestro arquero atajando un remate",
+    "05-barra.jpg": "Las familias alentando desde la orilla de la cancha",
+    "06-foto-grupal.jpg": "Foto grupal del equipo con la franja en el pecho",
+    "07-entrenamiento.jpg": "Ejercicio de pases en el entrenamiento del martes",
+    "08-trofeo.jpg": "El equipo levantando la copa del torneo de invierno"
+  }
+}

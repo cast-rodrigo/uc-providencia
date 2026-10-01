@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import EncabezadoSeccion from './EncabezadoSeccion.astro';
+import { fotosGaleria } from '../lib/galeria';
+
+const fotos = fotosGaleria.slice(0, 4);
+---
+
+{
+  fotos.length > 0 && (
+    <section aria-labelledby="titulo-galeria" class="bg-gris-50 py-20 sm:py-28 dark:bg-uc-noche-2">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+          <EncabezadoSeccion id="titulo-galeria" antetitulo="Recuerdos" titulo="Galería" />
+          <a href="/galeria" class="btn shrink-0 bg-uc-azul text-white hover:bg-uc-azul-hondo dark:bg-white dark:text-uc-noche dark:hover:bg-uc-cielo">
+            Ver todas las fotos
+          </a>
+        </div>
+        <ul class="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {fotos.map((f) => (
+            <li class="overflow-hidden rounded-uc shadow-suave">
+              <a href="/galeria" class="group block" tabindex="-1" aria-hidden="true">
+                <Image
+                  src={f.imagen}
+                  alt=""
+                  widths={[300, 450, 600]}
+                  sizes="(min-width: 1024px) 270px, 50vw"
+                  class="aspect-square size-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

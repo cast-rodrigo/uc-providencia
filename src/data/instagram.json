@@ -1,0 +1,8 @@
+{
+  "nota": "Respaldo cuando no hay BEHOLD_FEED_URL. Pega aquí los links de las publicaciones que quieras mostrar (de la más nueva a la más antigua).",
+  "posts": [
+    "https://www.instagram.com/p/EJEMPLO1/",
+    "https://www.instagram.com/p/EJEMPLO2/",
+    "https://www.instagram.com/p/EJEMPLO3/"
+  ]
+}
